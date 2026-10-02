@@ -1,0 +1,42 @@
+                    RBS
+                     │
+                     ▼
+             Cadastra patrocinador
+                     │
+                     ▼
+              Define contrato/cota
+                     │
+                     ▼
+          Portal gera permissões
+                     │
+                     ▼
+              PATROCINADOR
+                     │
+          ┌──────────┼──────────┐
+          ▼          ▼          ▼
+      Informações   Entregas   Prazos
+          │          │          │
+          ▼          ▼          ▼
+       Documentos   Mídias   Pendências
+          │          │          │
+          └──────────┼──────────┘
+                     ▼
+                 EVENTO
+                     │
+        ┌────────────┼────────────┐
+        ▼            ▼            ▼
+     Cortesias  Credenciamento  Ativações
+                     │
+                     ▼
+                  PÓS-EVENTO
+                     │
+        ┌────────────┼────────────┐
+        ▼            ▼            ▼
+       Mídia      Pesquisa    Comprovações
+        │            │            │
+        └────────────┼────────────┘
+                     ▼
+             IA & Dados
+                     │
+                     ▼
+           RELATÓRIO FINAL

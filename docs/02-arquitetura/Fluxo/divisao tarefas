@@ -1,0 +1,17 @@
+                 PORTAL
+                   │
+        ┌──────────┴──────────┐
+        │                     │
+      JAVA                IA & DADOS
+        │                     │
+  acesso/permissões       dados
+  API                     validação
+  arquivos                mídia
+  histórico               pesquisa
+  regras                  indicadores
+        │                     │
+        └──────────┬──────────┘
+                   │
+                BANCO
+                   │
+                RELATÓRIO
