@@ -69,8 +69,8 @@ Sprint 1 — Definição do produto e arquitetura
 
 ## Equipe
 
-- Nome — Nickolas Matheus Soares da Silva (PO)
-- Nome — Rafaella Di Domenico Loeblein (Scrum Master)
-- Nome — Paulo Gustavo Duarte da Costa
-- Nome — Emanuel Evangelista Santos Neves
-- Nome — Gabriel Reyes Boanova
+- Ia e Dados — Nickolas Matheus Soares da Silva (PO)
+- Java — Rafaella Di Domenico Loeblein (Scrum Master)
+- Ia e Dados — Paulo Gustavo Duarte da Costa
+- Java — Emanuel Evangelista Santos Neves
+- Java — Gabriel Reyes Boanova
