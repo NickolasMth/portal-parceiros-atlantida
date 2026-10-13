@@ -1,6 +1,7 @@
 package br.com.rbs.gestaoempresas.entity;
 
 import br.com.rbs.gestaoempresas.dto.evento.EventoRequestDTO;
+import br.com.rbs.gestaoempresas.enums.StatusEvento;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -48,10 +49,9 @@ public class Evento {
     @Column(length = 200)
     private String local;
 
-    @NotBlank(message = "O status do evento é obrigatório")
-    @Size(max = 20, message = "O status deve ter no máximo 20 caracteres")
-    @Column(length = 20)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
+    private StatusEvento status;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;

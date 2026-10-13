@@ -1,6 +1,7 @@
 package br.com.rbs.gestaoempresas.dto.evento;
 
 import br.com.rbs.gestaoempresas.entity.Evento;
+import br.com.rbs.gestaoempresas.enums.StatusEvento;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -13,7 +14,7 @@ public record EventoResponseDTO(
         LocalDate dataInicio,
         LocalDate dataFim,
         String local,
-        String status,
+        StatusEvento status,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
 ) {

@@ -1,6 +1,7 @@
 package br.com.rbs.gestaoempresas.dto.evento;
 
 import br.com.rbs.gestaoempresas.entity.Evento;
+import br.com.rbs.gestaoempresas.enums.StatusEvento;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -28,12 +29,10 @@ public record EventoRequestDTO(
         @Size(max = 200, message = "O local deve ter no máximo 200 caracteres")
         String local,
 
-        @NotBlank(message = "O status do evento é obrigatório")
-        @Size(max = 20, message = "O status deve ter no máximo 20 caracteres")
-        String status
+        @NotNull(message = "O status do evento é obrigatório")
+        StatusEvento status
 
 ) {
-
     public EventoRequestDTO(Evento evento) {
         this(
                 evento.getNome(),
