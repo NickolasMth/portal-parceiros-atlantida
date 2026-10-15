@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import br.com.rbs.gestaoempresas.entity.Patrocinador;
 
 @Repository
-public interface PatrocinadorRepository extends JpaRepository<Patrocinador, Long> {
+public interface PatrocinadorRepository extends JpaRepository<br.com.rbs.gestaoempresas.repository.Patrocinador, Long> {
 }
