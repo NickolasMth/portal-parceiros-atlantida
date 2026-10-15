@@ -2,6 +2,7 @@ package br.com.rbs.gestaoempresas.dto.evento;
 
 import br.com.rbs.gestaoempresas.entity.Evento;
 import br.com.rbs.gestaoempresas.enums.StatusEvento;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
