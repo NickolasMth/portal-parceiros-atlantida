@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$PROJECT_DIR$/gestao-empresas/src/main/resources/db/migration/V1__base.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/gestao-empresas/src/main/resources/db/migration/V2__dados_iniciais.sql" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/gestao-empresas/src/main/resources/db/migration/V3__dados_demo.sql" dialect="GenericSQL" />
+  </component>
+</project>
