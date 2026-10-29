@@ -6,7 +6,7 @@ import br.com.rbs.gestaoempresas.entity.Patrocinio;
 import br.com.rbs.gestaoempresas.repository.CotaModuloRepository;
 import br.com.rbs.gestaoempresas.repository.ModuloRepository;
 import br.com.rbs.gestaoempresas.repository.PatrocinioRepository;
-import br.com.rbs.gestaoempresas.security.AcessoService;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;

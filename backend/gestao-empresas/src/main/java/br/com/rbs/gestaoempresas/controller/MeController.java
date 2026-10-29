@@ -1,6 +1,6 @@
 package br.com.rbs.gestaoempresas.controller;
 
-import br.com.rbs.gestaoempresas.security.AcessoService;
+import br.com.rbs.gestaoempresas.service.AcessoService;
 import br.com.rbs.gestaoempresas.security.UsuarioAutenticado;
 import br.com.rbs.gestaoempresas.service.PatrocinioService;
 import br.com.rbs.gestaoempresas.service.PatrocinioService.AbaMenu;

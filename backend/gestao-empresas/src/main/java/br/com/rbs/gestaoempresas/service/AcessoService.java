@@ -1,6 +1,7 @@
-package br.com.rbs.gestaoempresas.security;
+package br.com.rbs.gestaoempresas.service;
 
 import br.com.rbs.gestaoempresas.repository.PatrocinioRepository;
+import br.com.rbs.gestaoempresas.security.UsuarioAutenticado;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

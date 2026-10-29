@@ -3,7 +3,6 @@ package br.com.rbs.gestaoempresas.service;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.*;
 import br.com.rbs.gestaoempresas.entity.*;
 import br.com.rbs.gestaoempresas.repository.*;
-import br.com.rbs.gestaoempresas.security.AcessoService;
 import br.com.rbs.gestaoempresas.security.UsuarioAutenticado;
 
 import java.nio.charset.StandardCharsets;
