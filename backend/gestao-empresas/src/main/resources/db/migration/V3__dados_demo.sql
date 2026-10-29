@@ -67,10 +67,28 @@ INSERT INTO patrocinador (
           TRUE
 );
 
-INSERT INTO patrocinio (cota_id, status, valor_acordado, evento_id, patrocinador_id)
-SELECT c.id, 'ATIVO', c.valor, e.id, p.id
+
+INSERT INTO patrocinio (
+    cota_id,
+    status,
+    valor_acordado,
+    evento_id,
+    patrocinador_id
+)
+SELECT
+    c.id,
+    'ATIVO',
+    c.valor,
+    e.id,
+    p.id
 FROM patrocinador p
-JOIN cota c ON (p.nome_fantasia = 'Cliente Amarelo' AND c.codigo = 'MASTER')
-            OR (p.nome_fantasia = 'Cliente Roxo'    AND c.codigo = 'SUBCOTA_G')
-            OR (p.nome_fantasia = 'Cliente Verde'   AND c.codigo = 'SUBCOTA')
-CROSS JOIN evento e WHERE e.edicao = 2027;
+         JOIN cota c ON (
+    (p.nome_fantasia = 'Cliente Amarelo' AND c.codigo = 'MASTER')
+        OR
+    (p.nome_fantasia = 'Cliente Roxo' AND c.codigo = 'SUBCOTA_G')
+        OR
+    (p.nome_fantasia = 'Cliente Verde' AND c.codigo = 'SUBCOTA')
+    )
+         CROSS JOIN evento e
+WHERE e.edicao = 2027;
+
