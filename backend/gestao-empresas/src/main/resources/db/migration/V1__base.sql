@@ -9,8 +9,7 @@ CREATE TABLE evento (
     status VARCHAR(20) NOT NULL DEFAULT 'ATIVO',
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uq_evento_1 UNIQUE (nome, edicao),
-    CONSTRAINT ck_evento_status CHECK (status IN ('PLANEJADO', 'ATIVO', 'ENCERRADO')),
+    CONSTRAINT ck_evento_status CHECK (status IN ('PLANEJADO', 'CANCELADO', 'ENCERRADO','ATIVO')),
     CONSTRAINT ck_evento_datas CHECK (data_inicio IS NULL OR data_fim IS NULL OR data_fim >= data_inicio)
 );
 

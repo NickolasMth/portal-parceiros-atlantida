@@ -21,12 +21,14 @@ INSERT INTO permissao (codigo, nome, descricao) VALUES
  ('PATROCINIO_GERENCIAR','Gerenciar patrocínios','Vincular patrocinador, cota e evento'),
  ('EMAIL_LIBERAR','Liberar e-mails','Convidar pessoas para acessar o portal'),
  ('USUARIO_LER','Listar usuários','Ver usuários cadastrados');
+
 INSERT INTO role_permissao (role_id, permissao_id)
 SELECT r.id, p.id FROM role r CROSS JOIN permissao p WHERE r.codigo = 'ADMIN_RBS';
 INSERT INTO role_permissao (role_id, permissao_id)
 SELECT r.id, p.id FROM role r JOIN permissao p ON p.codigo = 'EMAIL_LIBERAR' WHERE r.codigo = 'ADMIN_PATROCINADOR';
 
-INSERT INTO evento (nome, edicao, descricao, status) VALUES ('Planeta Atlântida', 2027, 'Edição 2027', 'ATIVO');
+INSERT INTO evento (nome, edicao, descricao,data_inicio,data_fim,local, status) VALUES ('Planeta Atlântida', 2027, 'Edição 2027', '2026-12-30','2027-03-15','São Jeronimo','ATIVO');
+
 INSERT INTO plano_comercial (nome, descricao, status, evento_id)
 SELECT 'Plano 2027', 'Plano comercial base', 'ATIVO', e.id FROM evento e WHERE e.edicao = 2027;
 
