@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum StatusEvento {
 
     PLANEJADO("Evento está sendo planejado"),
-    EM_ANDAMENTO("Evento está em andamento"),
+    ATIVO("Evento está em andamento"),
     ENCERRADO("Evento já foi encerrado"),
     CANCELADO("Evento foi cancelado");
 

@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/convites/aceitar").permitAll()
-                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }

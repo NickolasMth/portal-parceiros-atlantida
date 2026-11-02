@@ -24,7 +24,6 @@ public class ConviteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('EMAIL_LIBERAR')")
     public ConviteCriado liberar(
             @Valid @RequestBody LiberarEmailRequest req) {
 
