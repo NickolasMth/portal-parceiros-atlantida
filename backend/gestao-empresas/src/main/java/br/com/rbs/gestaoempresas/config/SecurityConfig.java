@@ -4,7 +4,12 @@ package br.com.rbs.gestaoempresas.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import br.com.rbs.gestaoempresas.security.JsonAccessDeniedHandler;
+import br.com.rbs.gestaoempresas.security.JsonAuthenticationEntryPoint;
+import br.com.rbs.gestaoempresas.security.JwtParaUsuarioConverter;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,8 +32,17 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    /** Usado pelo AuthService no login: junta o UsuarioDetailsService com o PasswordEncoder. */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   JwtParaUsuarioConverter conversor,
+                                                   JsonAuthenticationEntryPoint entryPoint,
+                                                   JsonAccessDeniedHandler accessDeniedHandler) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
@@ -37,10 +51,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/api/convites/aceitar").permitAll()
-                        .anyRequest().permitAll())
-                .httpBasic(Customizer.withDefaults());
+                        // únicos endpoints públicos de negócio: quem ainda não tem token
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/convites/aceitar").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(entryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
+                // lê "Authorization: Bearer <token>", valida assinatura e validade e monta o usuário
+                .oauth2ResourceServer(oauth -> oauth
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(conversor))
+                        .authenticationEntryPoint(entryPoint)
+                        .accessDeniedHandler(accessDeniedHandler));
         return http.build();
     }
 

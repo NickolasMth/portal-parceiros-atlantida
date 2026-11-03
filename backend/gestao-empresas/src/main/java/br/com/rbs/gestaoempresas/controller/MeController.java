@@ -27,7 +27,7 @@ public class MeController {
     public MeResponse me() {
         UsuarioAutenticado u = acesso.atual();
         return new MeResponse(u.getId(), u.getUsername(), u.getPatrocinadorId(), u.isAdminRbs(),
-            u.getAuthorities().stream().map(GrantedAuthority::getAuthority).sorted().toList());
+                u.getAuthorities().stream().map(GrantedAuthority::getAuthority).sorted().toList());
     }
 
     @GetMapping("/patrocinios")

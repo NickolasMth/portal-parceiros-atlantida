@@ -1,11 +1,13 @@
 package br.com.rbs.gestaoempresas.controller;
 
+import br.com.rbs.gestaoempresas.exception.TentativasExcedidasException;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,6 +17,17 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     ResponseEntity<Map<String, String>> negado(AccessDeniedException e) { return erro(HttpStatus.FORBIDDEN, "Acesso negado"); }
+
+    @ExceptionHandler(AuthenticationException.class)
+    ResponseEntity<Map<String, String>> naoAutenticado(AuthenticationException e) {
+        // mensagem única: não revela se o e-mail existe, se a senha está errada ou se a conta está inativa
+        return erro(HttpStatus.UNAUTHORIZED, "E-mail ou senha inválidos");
+    }
+
+    @ExceptionHandler(TentativasExcedidasException.class)
+    ResponseEntity<Map<String, String>> tentativas(TentativasExcedidasException e) {
+        return erro(HttpStatus.TOO_MANY_REQUESTS, e.getMessage());
+    }
 
     @ExceptionHandler(NoSuchElementException.class)
     ResponseEntity<Map<String, String>> naoEncontrado(NoSuchElementException e) { return erro(HttpStatus.NOT_FOUND, e.getMessage()); }
@@ -33,7 +46,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<Map<String, String>> validacao(MethodArgumentNotValidException e) {
         String msg = e.getBindingResult().getFieldErrors().stream()
-            .map(f -> f.getField() + ": " + f.getDefaultMessage()).findFirst().orElse("Dados inválidos");
+                .map(f -> f.getField() + ": " + f.getDefaultMessage()).findFirst().orElse("Dados inválidos");
         return erro(HttpStatus.BAD_REQUEST, msg);
     }
 
