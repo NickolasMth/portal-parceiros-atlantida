@@ -5,6 +5,7 @@ import br.com.rbs.gestaoempresas.dto.ConviteDtos;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.AceitarConviteRequest;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.ConviteCriado;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.LiberarEmailRequest;
+import br.com.rbs.gestaoempresas.dto.ConviteDtos.ConviteCriado;
 import br.com.rbs.gestaoempresas.entity.EmailLiberado;
 import br.com.rbs.gestaoempresas.entity.Patrocinador;
 import br.com.rbs.gestaoempresas.entity.Patrocinio;
@@ -22,10 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.HexFormat;
-import java.util.Locale;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -201,6 +199,7 @@ public class EmailLiberadoService {
         usuario.setStatus("ATIVO");
         usuario.setPerfil(convite.getPerfil());
         usuario.setPatrocinador(convite.getPatrocinador());
+        usuario.setTelefone(req.telefone());
 
         usuarios.save(usuario);
 
@@ -266,5 +265,17 @@ public class EmailLiberadoService {
             throw new IllegalStateException(
                     "Algoritmo SHA-256 indisponível", ex);
         }
+    }
+
+    public List<ConviteCriado> listarTodos() {
+        return convites.findAll()
+                .stream()
+                .map(convite -> new ConviteCriado(
+                        convite.getId(),
+                        convite.getEmail(),
+                        convite.getValidoAte(),
+                        convite.getTokenHash()
+                ))
+                .toList();
     }
 }

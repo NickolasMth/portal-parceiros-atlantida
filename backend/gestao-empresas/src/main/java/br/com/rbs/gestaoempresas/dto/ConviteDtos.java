@@ -45,7 +45,12 @@ public final class ConviteDtos {
             @NotBlank(message = "A senha é obrigatória")
             @Size(min = 8, max = 72,
                     message = "A senha deve ter entre 8 e 72 caracteres")
-            String senha
+            String senha,
+
+            @NotBlank(message = "O telefone é obrigatória")
+            @Size(min = 9,
+                    message = "O numero deve ter no minimo 8 digitos")
+            String telefone
     ) {
     }
 
