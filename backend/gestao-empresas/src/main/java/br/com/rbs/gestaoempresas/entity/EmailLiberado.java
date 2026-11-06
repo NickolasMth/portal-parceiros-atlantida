@@ -1,5 +1,6 @@
 package br.com.rbs.gestaoempresas.entity;
 
+import br.com.rbs.gestaoempresas.enums.StatusEmailLiberado;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -41,8 +42,9 @@ public class EmailLiberado {
     @Column(name = "email", nullable = false, length = 200)
     private String email;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_convite", nullable = false, length = 30)
-    private String statusConvite = "PENDENTE";
+    private StatusEmailLiberado statusConvite = StatusEmailLiberado.PENDENTE;
 
     @Column(name = "token_hash", nullable = false, unique = true, length = 200)
     private String tokenHash;

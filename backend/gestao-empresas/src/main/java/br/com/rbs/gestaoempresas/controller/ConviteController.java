@@ -46,4 +46,16 @@ public class ConviteController {
     public ResponseEntity<List<ConviteCriado>> listarTodos() {
         return ResponseEntity.ok(service.listarTodos());
     }
+
+    @PostMapping("/revogar")
+    public ResponseEntity<Void> revogar(@RequestParam String email) {
+        service.revogarConvite(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> excluir(@RequestParam String email) {
+        service.excluir(email);
+        return ResponseEntity.noContent().build();
+    }
 }

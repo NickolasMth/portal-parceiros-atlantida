@@ -1,6 +1,7 @@
 
 package br.com.rbs.gestaoempresas.dto;
 
+import br.com.rbs.gestaoempresas.enums.StatusEmailLiberado;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -29,6 +30,7 @@ public final class ConviteDtos {
             Long id,
             String email,
             Instant validoAte,
+            StatusEmailLiberado status,
             String token
     ) {
     }

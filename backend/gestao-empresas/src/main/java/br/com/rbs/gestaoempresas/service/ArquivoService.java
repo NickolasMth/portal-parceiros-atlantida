@@ -3,7 +3,6 @@ package br.com.rbs.gestaoempresas.service;
 import br.com.rbs.gestaoempresas.dto.ArquivoBaixadoDTO;
 import br.com.rbs.gestaoempresas.dto.ArquivoResponseDTO;
 import br.com.rbs.gestaoempresas.entity.Arquivo;
-import br.com.rbs.gestaoempresas.entity.Historico;
 import br.com.rbs.gestaoempresas.entity.Patrocinio;
 import br.com.rbs.gestaoempresas.entity.Usuario;
 import br.com.rbs.gestaoempresas.repository.ArquivoRepository;
@@ -34,7 +33,7 @@ import java.util.UUID;
 public class ArquivoService {
 
     private final ArquivoRepository arquivoRepository;
-    private final HistoricoRepository historicoRepository;
+    private final HistoricoService historico;
     private final UsuarioRepository usuarioRepository;
     private final PatrocinioRepository patrocinioRepository;
     private final ArmazenamentoArquivos armazenamento;
@@ -44,14 +43,14 @@ public class ArquivoService {
 
     public ArquivoService(
             ArquivoRepository arquivoRepository,
-            HistoricoRepository historicoRepository,
+            HistoricoRepository historicoRepository, HistoricoService historico,
             UsuarioRepository usuarioRepository,
             PatrocinioRepository patrocinioRepository,
             ArmazenamentoArquivos armazenamento,
             @Value("${app.storage.max-file-size:20971520}") long tamanhoMaximo
     ) {
         this.arquivoRepository = arquivoRepository;
-        this.historicoRepository = historicoRepository;
+        this.historico = historico;
         this.usuarioRepository = usuarioRepository;
         this.patrocinioRepository = patrocinioRepository;
         this.armazenamento = armazenamento;
@@ -129,7 +128,7 @@ public class ArquivoService {
 
             Arquivo salvo = arquivoRepository.save(novoArquivo);
 
-            registrarHistorico(
+            historico.registrarArquivoHistorico(
                     "UPLOAD",
                     salvo,
                     usuario,
@@ -174,7 +173,7 @@ public class ArquivoService {
 
             byte[] conteudo = inputStream.readAllBytes();
 
-            registrarHistorico(
+            historico.registrarArquivoHistorico(
                     "DOWNLOAD",
                     arquivo,
                     usuario,
@@ -215,7 +214,7 @@ public class ArquivoService {
         verificarAcessoArquivo(usuario, arquivo, authentication);
 
         // Registra o histórico antes de excluir o registro.
-        registrarHistorico(
+        historico.registrarArquivoHistorico(
                 "EXCLUSAO",
                 arquivo,
                 usuario,
@@ -350,34 +349,6 @@ public class ArquivoService {
         return converterDTO(arquivo);
     }
 
-    private void registrarHistorico(
-            String acao,
-            Arquivo arquivo,
-            Usuario usuario,
-            Patrocinio patrocinio,
-            HttpServletRequest request,
-            String descricao
-    ) {
-
-        Historico historico = new Historico();
-
-        historico.setAcao(acao);
-        historico.setEntidade("ARQUIVO");
-        historico.setEntidadeId(arquivo.getId());
-        historico.setUsuario(usuario);
-        historico.setPatrocinio(patrocinio);
-        historico.setDescricao(descricao);
-        historico.setIp(request.getRemoteAddr());
-
-        historico.setDadosNovos(Map.of(
-                "nomeOriginal", arquivo.getNomeOriginal(),
-                "mimeType", arquivo.getMimeType(),
-                "tamanhoBytes", arquivo.getTamanhoBytes(),
-                "storageKey", arquivo.getStorageKey()
-        ));
-
-        historicoRepository.save(historico);
-    }
 
     private ArquivoResponseDTO converterDTO(Arquivo arquivo) {
 

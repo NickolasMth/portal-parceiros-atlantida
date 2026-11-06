@@ -5,16 +5,9 @@ import br.com.rbs.gestaoempresas.dto.ConviteDtos;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.AceitarConviteRequest;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.ConviteCriado;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.LiberarEmailRequest;
-import br.com.rbs.gestaoempresas.dto.ConviteDtos.ConviteCriado;
-import br.com.rbs.gestaoempresas.entity.EmailLiberado;
-import br.com.rbs.gestaoempresas.entity.Patrocinador;
-import br.com.rbs.gestaoempresas.entity.Patrocinio;
-import br.com.rbs.gestaoempresas.entity.Usuario;
-import br.com.rbs.gestaoempresas.repository.EmailLiberadoRepository;
-import br.com.rbs.gestaoempresas.repository.PatrocinadorRepository;
-import br.com.rbs.gestaoempresas.repository.PatrocinioRepository;
-import br.com.rbs.gestaoempresas.repository.PerfilRepository;
-import br.com.rbs.gestaoempresas.repository.UsuarioRepository;
+import br.com.rbs.gestaoempresas.entity.*;
+import br.com.rbs.gestaoempresas.enums.StatusEmailLiberado;
+import br.com.rbs.gestaoempresas.repository.*;
 import br.com.rbs.gestaoempresas.security.UsuarioAutenticado;
 
 import java.nio.charset.StandardCharsets;
@@ -25,12 +18,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@AllArgsConstructor
 public class EmailLiberadoService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -44,26 +39,6 @@ public class EmailLiberadoService {
     private final PasswordEncoder encoder;
     private final AcessoService acesso;
     private final ApplicationEventPublisher eventPublisher;
-
-    public EmailLiberadoService(
-            EmailLiberadoRepository convites,
-            UsuarioRepository usuarios,
-            PerfilRepository perfis,
-            PatrocinadorRepository patrocinadores,
-            PatrocinioRepository patrocinios,
-            PasswordEncoder encoder,
-            AcessoService acesso,
-            ApplicationEventPublisher eventPublisher) {
-
-        this.convites = convites;
-        this.usuarios = usuarios;
-        this.perfis = perfis;
-        this.patrocinadores = patrocinadores;
-        this.patrocinios = patrocinios;
-        this.encoder = encoder;
-        this.acesso = acesso;
-        this.eventPublisher = eventPublisher;
-    }
 
     @Transactional
     public ConviteCriado liberar(LiberarEmailRequest req) {
@@ -112,7 +87,7 @@ public class EmailLiberadoService {
         }
 
         if (convites.existsByEmailIgnoreCaseAndStatusConvite(
-                email, "PENDENTE")) {
+                email, StatusEmailLiberado.PENDENTE)) {
             throw new IllegalStateException(
                     "Já existe convite pendente para este e-mail");
         }
@@ -161,6 +136,7 @@ public class EmailLiberadoService {
                 convite.getId(),
                 email,
                 convite.getValidoAte(),
+                convite.getStatusConvite(),
                 token
         );
     }
@@ -174,7 +150,7 @@ public class EmailLiberadoService {
                 .orElseThrow(() ->
                         new NoSuchElementException("Convite inválido"));
 
-        if (!"PENDENTE".equals(convite.getStatusConvite())) {
+        if (!StatusEmailLiberado.PENDENTE.equals(convite.getStatusConvite())) {
             throw new IllegalStateException(
                     "Convite já utilizado ou cancelado");
         }
@@ -183,6 +159,7 @@ public class EmailLiberadoService {
 
         if (convite.getValidoAte() == null
                 || !convite.getValidoAte().isAfter(agora)) {
+            convite.setStatusConvite(StatusEmailLiberado.EXPIRADO);
             throw new IllegalStateException("Convite expirado");
         }
 
@@ -203,7 +180,7 @@ public class EmailLiberadoService {
 
         usuarios.save(usuario);
 
-        convite.setStatusConvite("ACEITO");
+        convite.setStatusConvite(StatusEmailLiberado.ACEITO);
         convite.setAceitoEm(agora);
         convite.setAceitoPorUsuario(usuario);
     }
@@ -242,7 +219,7 @@ public class EmailLiberadoService {
 
         long convitesPendentes =
                 convites.countByPatrocinadorIdAndStatusConvite(
-                        patrocinadorId, "PENDENTE");
+                        patrocinadorId, StatusEmailLiberado.PENDENTE);
 
         long usados = usuariosAtivosOuCadastrados + convitesPendentes;
 
@@ -274,8 +251,45 @@ public class EmailLiberadoService {
                         convite.getId(),
                         convite.getEmail(),
                         convite.getValidoAte(),
+                        convite.getStatusConvite(),
                         convite.getTokenHash()
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public void revogarConvite(String emailRequest) {
+        String email = emailRequest.trim().toLowerCase(Locale.ROOT);
+
+        EmailLiberado convite = convites
+                .findByEmailIgnoreCase(email)
+                .orElseThrow(() ->
+                        new NoSuchElementException(
+                                "Convite não encontrado"));
+
+        if (!StatusEmailLiberado.PENDENTE.equals(convite.getStatusConvite())) {
+            throw new IllegalStateException(
+                    "Convite já utilizado ou cancelado");
+        }
+
+        convite.setStatusConvite(StatusEmailLiberado.REVOGADO);
+    }
+
+    @Transactional
+    public void excluir(String emailRequest) {
+        String email = emailRequest.trim().toLowerCase(Locale.ROOT);
+
+        EmailLiberado convite = convites
+                .findByEmailIgnoreCase(email)
+                .orElseThrow(() ->
+                        new NoSuchElementException(
+                                "Convite não encontrado"));
+
+        if (StatusEmailLiberado.PENDENTE.equals(convite.getStatusConvite())) {
+            throw new IllegalStateException(
+                    "Revogue ou espere expirar o email antes de exclui-lo");
+        }
+
+        convites.delete(convite);
     }
 }

@@ -31,6 +31,7 @@ CREATE TABLE historico (
     CONSTRAINT fk_historico_patrocinio FOREIGN KEY (patrocinio_id) REFERENCES patrocinio(id),
     CONSTRAINT fk_historico_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(id)
 );
+
 CREATE INDEX idx_historico_patrocinio_data ON historico (patrocinio_id, created_at DESC);
 CREATE INDEX idx_historico_entidade ON historico (entidade, entidade_id);
 CREATE INDEX idx_historico_usuario_id ON historico (usuario_id);
