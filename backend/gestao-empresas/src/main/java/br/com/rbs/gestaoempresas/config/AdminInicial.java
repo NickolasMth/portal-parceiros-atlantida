@@ -1,6 +1,7 @@
 package br.com.rbs.gestaoempresas.config;
 
 import br.com.rbs.gestaoempresas.entity.Usuario;
+import br.com.rbs.gestaoempresas.enums.StatusUsuario;
 import br.com.rbs.gestaoempresas.repository.PerfilRepository;
 import br.com.rbs.gestaoempresas.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ public class AdminInicial implements CommandLineRunner {
         u.setNome("Admin RBS");
         u.setEmail(email);
         u.setSenhaHash(encoder.encode(senha));
-        u.setStatus("ATIVO");
+        u.setStatus(StatusUsuario.ATIVO);
         u.setPerfil(perfis.findByCodigo("ADMIN_RBS").orElseThrow());
         usuarios.save(u);
     }

@@ -1,5 +1,6 @@
 package br.com.rbs.gestaoempresas.entity;
 
+import br.com.rbs.gestaoempresas.enums.StatusUsuario;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -38,8 +39,9 @@ public class Usuario {
     @Column(name = "telefone", length = 30)
     private String telefone;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
-    private String status = "ATIVO";
+    private StatusUsuario status = StatusUsuario.ATIVO;
 
     @Column(name = "ultimo_acesso")
     private Instant ultimoAcesso;

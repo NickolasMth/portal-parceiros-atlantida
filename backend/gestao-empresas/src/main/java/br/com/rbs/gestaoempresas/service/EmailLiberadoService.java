@@ -7,6 +7,7 @@ import br.com.rbs.gestaoempresas.dto.ConviteDtos.ConviteCriado;
 import br.com.rbs.gestaoempresas.dto.ConviteDtos.LiberarEmailRequest;
 import br.com.rbs.gestaoempresas.entity.*;
 import br.com.rbs.gestaoempresas.enums.StatusEmailLiberado;
+import br.com.rbs.gestaoempresas.enums.StatusUsuario;
 import br.com.rbs.gestaoempresas.repository.*;
 import br.com.rbs.gestaoempresas.security.UsuarioAutenticado;
 
@@ -173,7 +174,7 @@ public class EmailLiberadoService {
         usuario.setNome(req.nome().trim());
         usuario.setEmail(convite.getEmail());
         usuario.setSenhaHash(encoder.encode(req.senha()));
-        usuario.setStatus("ATIVO");
+        usuario.setStatus(StatusUsuario.ATIVO);
         usuario.setPerfil(convite.getPerfil());
         usuario.setPatrocinador(convite.getPatrocinador());
         usuario.setTelefone(req.telefone());

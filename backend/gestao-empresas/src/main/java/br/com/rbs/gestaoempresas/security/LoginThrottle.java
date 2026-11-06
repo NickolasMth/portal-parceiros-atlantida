@@ -19,7 +19,6 @@ public class LoginThrottle {
 
     private final Map<String, Estado> estados = new ConcurrentHashMap<>();
 
-    /** Lança TentativasExcedidasException se a chave estiver bloqueada. */
     public void verificar(String chave) {
         Estado e = estados.get(chave);
         if (e != null && e.bloqueadoAte() != null && e.bloqueadoAte().isAfter(Instant.now())) {

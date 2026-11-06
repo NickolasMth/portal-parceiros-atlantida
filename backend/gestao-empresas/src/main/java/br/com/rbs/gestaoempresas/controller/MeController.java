@@ -36,4 +36,5 @@ public class MeController {
     @GetMapping("/patrocinios/{id}/menu")
     @PreAuthorize("@acesso.podeAcessarPatrocinio(#id)")
     public List<AbaMenu> menu(@PathVariable Long id) { return patrocinioService.menu(id); }
+
 }

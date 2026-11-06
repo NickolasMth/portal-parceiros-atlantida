@@ -9,7 +9,6 @@ import br.com.rbs.gestaoempresas.security.JsonAuthenticationEntryPoint;
 import br.com.rbs.gestaoempresas.security.JwtParaUsuarioConverter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,22 +19,20 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import br.com.rbs.gestaoempresas.security.UsuarioDetailsService;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 
 import java.util.List;
 
 @Configuration
-@EnableMethodSecurity // habilita @PreAuthorize nos controllers
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /** Usado pelo AuthService no login: junta o UsuarioDetailsService com o PasswordEncoder. */
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
     }
 
     @Bean
@@ -57,7 +54,6 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(entryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
-                // lê "Authorization: Bearer <token>", valida assinatura e validade e monta o usuário
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(conversor))
                         .authenticationEntryPoint(entryPoint)
@@ -75,5 +71,25 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", c);
         return source;
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(
+            UsuarioDetailsService usuarioDetailsService,
+            PasswordEncoder passwordEncoder
+    ) {
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider(usuarioDetailsService);
+
+        provider.setPasswordEncoder(passwordEncoder);
+
+        return provider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationProvider authenticationProvider
+    ) {
+        return new ProviderManager(authenticationProvider);
     }
 }
